@@ -1,0 +1,152 @@
+{
+  "demo_id": 2,
+  "timestamp": "2026-05-11T20:34:38",
+  "data": {
+    "language": "pick the red cube and place it at x 0.55 y -0.45",
+    "parsed_task": {
+      "task": "pick_place_xy",
+      "obj": "red_box",
+      "x": 0.55,
+      "y": -0.45
+    },
+    "object_grounding": {
+      "object_name": "red_box",
+      "object_position": [
+        0.4,
+        -0.3,
+        0.03
+      ],
+      "visible_or_known": true
+    },
+    "symbolic_action": {
+      "action_type": "pick_place_xy",
+      "action_type_id": 2,
+      "object_name": "red_box",
+      "object_id": 1,
+      "target_name": null,
+      "target_id": 0,
+      "target_xy": [
+        0.55,
+        -0.45
+      ],
+      "control_mode": "cartesian",
+      "gripper_sequence": [
+        "open",
+        "close",
+        "open"
+      ]
+    },
+    "action_vector": [
+      2.0,
+      1.0,
+      0.4000000059604645,
+      -0.30000001192092896,
+      0.550000011920929,
+      -0.44999998807907104,
+      0.0,
+      1.0
+    ],
+    "decoded_action": {
+      "action_type": "pick_place_xy",
+      "object_name": "red_box",
+      "pick_xy": [
+        0.4000000059604645,
+        -0.30000001192092896
+      ],
+      "target_name": "none",
+      "has_explicit_xy": true,
+      "place_xy": [
+        0.550000011920929,
+        -0.44999998807907104
+      ]
+    },
+    "action_sequence": [
+      {
+        "step": 1,
+        "name": "APPROACH_OBJECT",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.4,
+          -0.3
+        ],
+        "target_z": 0.18,
+        "gripper": "open"
+      },
+      {
+        "step": 2,
+        "name": "OPEN_GRIPPER",
+        "control_mode": "gripper",
+        "gripper": "open"
+      },
+      {
+        "step": 3,
+        "name": "DESCEND_TO_OBJECT",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.4,
+          -0.3
+        ],
+        "target_z": 0.034999999999999996,
+        "gripper": "open"
+      },
+      {
+        "step": 4,
+        "name": "CLOSE_GRIPPER",
+        "control_mode": "gripper",
+        "gripper": "close"
+      },
+      {
+        "step": 5,
+        "name": "LIFT_OBJECT",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.4,
+          -0.3
+        ],
+        "target_z": 0.18,
+        "gripper": "close"
+      },
+      {
+        "step": 6,
+        "name": "MOVE_TO_TARGET",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "target_z": 0.18,
+        "gripper": "close",
+        "target_name": null
+      },
+      {
+        "step": 7,
+        "name": "DESCEND_TO_PLACE",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "target_z": 0.03,
+        "gripper": "close",
+        "target_name": null
+      },
+      {
+        "step": 8,
+        "name": "OPEN_GRIPPER",
+        "control_mode": "gripper",
+        "gripper": "open"
+      },
+      {
+        "step": 9,
+        "name": "RETREAT",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "target_z": 0.18,
+        "gripper": "open"
+      }
+    ]
+  }
+}

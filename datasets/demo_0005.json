@@ -1,0 +1,145 @@
+{
+  "demo_id": 5,
+  "timestamp": "2026-05-11T20:35:01",
+  "data": {
+    "language": "pick the blue cube and place it in the bin",
+    "parsed_task": {
+      "task": "pick_place",
+      "obj": "blue_box",
+      "target": "bin_center"
+    },
+    "object_grounding": {
+      "object_name": "blue_box",
+      "object_position": [
+        0.6,
+        -0.3,
+        0.03
+      ],
+      "visible_or_known": true
+    },
+    "symbolic_action": {
+      "action_type": "pick_place",
+      "action_type_id": 1,
+      "object_name": "blue_box",
+      "object_id": 3,
+      "target_name": "bin_center",
+      "target_id": 1,
+      "target_xy": null,
+      "control_mode": "cartesian",
+      "gripper_sequence": [
+        "open",
+        "close",
+        "open"
+      ]
+    },
+    "action_vector": [
+      1.0,
+      3.0,
+      0.6000000238418579,
+      -0.30000001192092896,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ],
+    "decoded_action": {
+      "action_type": "pick_place",
+      "object_name": "blue_box",
+      "pick_xy": [
+        0.6000000238418579,
+        -0.30000001192092896
+      ],
+      "target_name": "bin_center",
+      "has_explicit_xy": false,
+      "place_xy": null
+    },
+    "action_sequence": [
+      {
+        "step": 1,
+        "name": "APPROACH_OBJECT",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.6,
+          -0.3
+        ],
+        "target_z": 0.18,
+        "gripper": "open"
+      },
+      {
+        "step": 2,
+        "name": "OPEN_GRIPPER",
+        "control_mode": "gripper",
+        "gripper": "open"
+      },
+      {
+        "step": 3,
+        "name": "DESCEND_TO_OBJECT",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.6,
+          -0.3
+        ],
+        "target_z": 0.034999999999999996,
+        "gripper": "open"
+      },
+      {
+        "step": 4,
+        "name": "CLOSE_GRIPPER",
+        "control_mode": "gripper",
+        "gripper": "close"
+      },
+      {
+        "step": 5,
+        "name": "LIFT_OBJECT",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.6,
+          -0.3
+        ],
+        "target_z": 0.18,
+        "gripper": "close"
+      },
+      {
+        "step": 6,
+        "name": "MOVE_TO_TARGET",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.55,
+          0.25
+        ],
+        "target_z": 0.18,
+        "gripper": "close",
+        "target_name": "bin_center"
+      },
+      {
+        "step": 7,
+        "name": "DESCEND_TO_PLACE",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.55,
+          0.25
+        ],
+        "target_z": 0.03,
+        "gripper": "close",
+        "target_name": "bin_center"
+      },
+      {
+        "step": 8,
+        "name": "OPEN_GRIPPER",
+        "control_mode": "gripper",
+        "gripper": "open"
+      },
+      {
+        "step": 9,
+        "name": "RETREAT",
+        "control_mode": "cartesian",
+        "target_xy": [
+          0.55,
+          0.25
+        ],
+        "target_z": 0.18,
+        "gripper": "open"
+      }
+    ]
+  }
+}
