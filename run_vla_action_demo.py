@@ -11,7 +11,8 @@ Language command
 → object/action grounding
 → symbolic action encoding
 → numerical action vector
-→ optional robot execution through Demo from pickandplace.py
+→ decoded action vector
+→ robot action sequence
 
 Run:
     python3 run_vla_action_demo.py
@@ -25,7 +26,10 @@ Example commands:
 
 from __future__ import annotations
 
+from typing import Any, Dict
+
 from nl_interface import parse_command
+
 from action_encoding.action_encoder import (
     encode_symbolic_action,
     symbolic_action_to_dict,
@@ -33,7 +37,13 @@ from action_encoding.action_encoder import (
     decode_action_vector,
 )
 
-# Static known MuJoCo object positions from world.xml
+from action_sequence.sequence_encoder import (
+    build_pick_place_sequence,
+    print_action_sequence,
+)
+
+
+# Static known MuJoCo object positions from world.xml.
 # Later this can be replaced by live perception / MuJoCo state.
 OBJECT_POSITIONS = {
     "red_box": [0.40, -0.30, 0.03],
@@ -44,9 +54,18 @@ OBJECT_POSITIONS = {
 }
 
 
-def print_vla_pipeline(command: str) -> dict:
+def print_vla_pipeline(command: str) -> Dict[str, Any]:
     """
     Convert a natural-language command into a structured VLA-style action.
+
+    Pipeline:
+        language command
+        -> parsed task
+        -> object grounding
+        -> symbolic action
+        -> numerical action vector
+        -> decoded action
+        -> robot action sequence
     """
     print("\n" + "=" * 80)
     print("[LANGUAGE COMMAND]")
@@ -59,19 +78,32 @@ def print_vla_pipeline(command: str) -> dict:
     task = parsed.get("task", "unknown")
     if task == "unknown":
         print("\n[ERROR] Could not parse command.")
-        return parsed
+        return {
+            "language": command,
+            "parsed_task": parsed,
+            "error": "unknown_command",
+        }
 
     obj = parsed.get("obj", "box")
+
     if obj not in OBJECT_POSITIONS:
         print(f"\n[WARNING] Object '{obj}' not found in known object map.")
+        object_grounding = {
+            "object_name": obj,
+            "object_position": None,
+            "visible_or_known": False,
+        }
     else:
-        print("\n[OBJECT GROUNDING]")
-        print({
+        object_grounding = {
             "object_name": obj,
             "object_position": OBJECT_POSITIONS[obj],
             "visible_or_known": True,
-        })
+        }
 
+    print("\n[OBJECT GROUNDING]")
+    print(object_grounding)
+
+    # ---------------- symbolic + vector action encoding ----------------
     symbolic = encode_symbolic_action(parsed)
     symbolic_dict = symbolic_action_to_dict(symbolic)
 
@@ -87,21 +119,38 @@ def print_vla_pipeline(command: str) -> dict:
     print("\n[DECODED ACTION VECTOR]")
     print(decoded)
 
-    print("\n[VLA SUMMARY]")
-    print({
+    # ---------------- low-level action sequence encoding ----------------
+    try:
+        action_sequence = build_pick_place_sequence(parsed, OBJECT_POSITIONS)
+
+        print_action_sequence(action_sequence)
+
+    except Exception as e:
+        action_sequence = []
+        print("\n[ACTION SEQUENCE WARNING]")
+        print(f"Could not build action sequence: {e}")
+
+    # ---------------- final VLA summary ----------------
+    summary = {
         "language": command,
         "parsed_task": parsed,
+        "object_grounding": object_grounding,
         "symbolic_action": symbolic_dict,
         "action_vector": vector.tolist(),
         "decoded_action": decoded,
-    })
+        "action_sequence": action_sequence,
+    }
 
-    return parsed
+    print("\n[VLA SUMMARY]")
+    print(summary)
+
+    return summary
 
 
 def main() -> None:
     print("\n--- Vision-Language-Action Pick-and-Place Demo ---")
     print("Type a command, or type 'quit' to exit.\n")
+
     print("Examples:")
     print("  pick the red cube and place it at x 0.55 y -0.45")
     print("  move the yellow block to x 0.45 y 0.20")
