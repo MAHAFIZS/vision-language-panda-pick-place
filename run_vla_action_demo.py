@@ -13,6 +13,7 @@ Language command
 → numerical action vector
 → decoded action vector
 → robot action sequence
+→ optional dataset logging
 
 Run:
     python3 run_vla_action_demo.py
@@ -41,6 +42,8 @@ from action_sequence.sequence_encoder import (
     build_pick_place_sequence,
     print_action_sequence,
 )
+
+from dataset.demo_logger import DemoLogger
 
 
 # Static known MuJoCo object positions from world.xml.
@@ -103,7 +106,6 @@ def print_vla_pipeline(command: str) -> Dict[str, Any]:
     print("\n[OBJECT GROUNDING]")
     print(object_grounding)
 
-    # ---------------- symbolic + vector action encoding ----------------
     symbolic = encode_symbolic_action(parsed)
     symbolic_dict = symbolic_action_to_dict(symbolic)
 
@@ -119,10 +121,8 @@ def print_vla_pipeline(command: str) -> Dict[str, Any]:
     print("\n[DECODED ACTION VECTOR]")
     print(decoded)
 
-    # ---------------- low-level action sequence encoding ----------------
     try:
         action_sequence = build_pick_place_sequence(parsed, OBJECT_POSITIONS)
-
         print_action_sequence(action_sequence)
 
     except Exception as e:
@@ -130,7 +130,6 @@ def print_vla_pipeline(command: str) -> Dict[str, Any]:
         print("\n[ACTION SEQUENCE WARNING]")
         print(f"Could not build action sequence: {e}")
 
-    # ---------------- final VLA summary ----------------
     summary = {
         "language": command,
         "parsed_task": parsed,
@@ -148,6 +147,8 @@ def print_vla_pipeline(command: str) -> Dict[str, Any]:
 
 
 def main() -> None:
+    logger = DemoLogger(output_dir="datasets")
+
     print("\n--- Vision-Language-Action Pick-and-Place Demo ---")
     print("Type a command, or type 'quit' to exit.\n")
 
@@ -167,7 +168,14 @@ def main() -> None:
         if not command:
             continue
 
-        print_vla_pipeline(command)
+        summary = print_vla_pipeline(command)
+
+        save = input("\nSave this demonstration? [y/N]: ").strip().lower()
+        if save in {"y", "yes"}:
+            output_path = logger.save_demo(summary)
+            print(f"Saved demonstration to: {output_path}")
+        else:
+            print("Demonstration not saved.")
 
 
 if __name__ == "__main__":
