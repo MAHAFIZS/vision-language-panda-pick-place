@@ -1,0 +1,8 @@
+mujoco
+glfw
+numpy
+opencv-python
+SpeechRecognition
+pyaudio
+scikit-learn
+joblib
