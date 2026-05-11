@@ -37,9 +37,20 @@ import mujoco
 import numpy as np
 
 from nl_interface import parse_command
+from action_encoding.action_encoder import (
+    encode_symbolic_action,
+    symbolic_action_to_dict,
+    encode_action_vector,
+    decode_action_vector,
+)
 from perception.color_detector import detect_colored_objects
 from perception.vision_grounder import perception_ground_object
-
+from action_encoding.action_encoder import (
+    encode_symbolic_action,
+    symbolic_action_to_dict,
+    encode_action_vector,
+    decode_action_vector,
+)
 # ------------------ VOICE ------------------
 import speech_recognition as sr
 # ------------------------------------------
@@ -915,32 +926,96 @@ class Demo:
 
         Thread(target=loop, daemon=True).start()
 
-    # ---------------- vision-language grounding check ----------------
+    # ---------------- command execution ----------------
+        # ---------------- vision-language grounding check ----------------
+        # ---------------- vision-language grounding check ----------------
     def vision_check_object(self, cmd: dict) -> bool:
         """
         Stable live verification for terminal/GUI execution.
 
+        Do NOT create mujoco.Renderer() here because the GLFW viewer is already
+        running. Creating a second renderer or calling mj_forward during live
+        stepping can crash OpenGL/MuJoCo.
+
         Camera-based perception is tested separately with:
             python3 test_perception.py
             python3 test_vision_language.py
-
-        During live MuJoCo viewer execution, do not create mujoco.Renderer().
         """
-        obj = cmd.get("obj", "box")
-        valid_objects = self._valid_object_names()
+        try:
+            obj = cmd.get("obj", "box")
+            valid_objects = self._valid_object_names()
 
-        print("[VISION] Live object check:", obj)
-        print("[VISION] Valid objects:", valid_objects)
+            print("[VISION] Live object check:", obj)
+            print("[VISION] Valid objects:", valid_objects)
 
-        if obj not in valid_objects:
+            if obj not in valid_objects:
+                with self._console_lock:
+                    self.console_status = f"❌ Object not found: {obj}"
+                print(f"[VISION] Object not found: {obj}")
+                return False
+
+            print("[VISION] Grounded:", {"obj": obj, "visible": True})
+            return True
+
+        except Exception as e:
+            print("[VISION] Warning:", e)
+            return True
+        # ---------------- action encoding helpers ----------------
+    def get_object_positions_for_encoder(self) -> dict:
+        """
+        Return object positions from MuJoCo for the action encoder.
+
+        Format:
+            {
+                "red_box": [x, y, z],
+                "green_box": [x, y, z],
+                ...
+            }
+        """
+        positions = {}
+
+        for obj_name in self._valid_object_names():
+            try:
+                b = self.data.body(obj_name)
+                positions[obj_name] = [
+                    float(b.xpos[0]),
+                    float(b.xpos[1]),
+                    float(b.xpos[2]),
+                ]
+            except Exception:
+                pass
+
+        return positions
+    def encode_and_print_action(self, cmd: dict) -> None:
+        """
+        Convert parsed language command into symbolic and numerical action encoding.
+        Local import is used here to avoid global import/scope issues.
+        """
+        try:
+            from action_encoding.action_encoder import (
+                encode_symbolic_action,
+                symbolic_action_to_dict,
+                encode_action_vector,
+                decode_action_vector,
+            )
+
+            object_positions = self.get_object_positions_for_encoder()
+
+            symbolic = encode_symbolic_action(cmd)
+            symbolic_dict = symbolic_action_to_dict(symbolic)
+
+            vector = encode_action_vector(cmd, object_positions)
+            decoded = decode_action_vector(vector)
+
+            print("[ACTION] Symbolic:", symbolic_dict)
+            print("[ACTION] Vector:", vector)
+            print("[ACTION] Decoded:", decoded)
+
             with self._console_lock:
-                self.console_status = f"❌ Object not found: {obj}"
-            print(f"[VISION] Object not found: {obj}")
-            return False
+                self.console_status = f"Action encoded: {symbolic.action_type} / {symbolic.object_name}"
 
-        print("[VISION] Grounded:", {"obj": obj, "visible": True})
-        return True
-
+        except Exception as e:
+            print("[ACTION] Warning: action encoding failed:", e)
     def _execute_parsed_command(self, cmd: dict, raw: str | None = None) -> None:
         if raw:
             with self._console_lock:
@@ -1021,12 +1096,153 @@ class Demo:
                         self.motion_busy.clear()
                         return
 
+                    self.encode_and_print_action(cmd)
+
+                if task == "pick_place":
+
+                    self.encode_and_print_action(cmd)
+
                 if task == "pick_place":
                     obj = cmd.get("obj", "box")
                     target = cmd.get("target", "bin_center")
                     with self._console_lock:
                         self.console_status = f"Pick {obj} -> {target}"
-                    self.pick_place_to_site(obj, target)
+                    self.pick_placedef get_object_positions_for_encoder(self) -> dict:
+        """
+        Return object positions from MuJoCo for the action encoder.
+
+        Format:
+            {
+                "red_box": [x, y, z],
+                "green_box": [x, y, z],
+                ...
+            }
+        """
+        positions = {}
+
+        for obj_name in self._valid_object_names():
+            try:
+                b = self.data.body(obj_name)
+                positions[obj_name] = [
+                    float(b.xpos[0]),
+                    float(b.xpos[1]),
+                    float(b.xpos[2]),
+                ]
+            except Exception:
+                pass
+
+        return positions
+        def encode_and_print_action(self, cmd: dict) -> None:
+        """
+        Convert parsed language command into symbolic and numerical action encoding.
+        Local import is used here to avoid global import/scope issues.
+        """
+        try:
+            from action_encoding.action_encoder import (
+                encode_symbolic_action,
+                symbolic_action_to_dict,
+                encode_action_vector,
+                decode_action_vector,
+            )
+
+            object_positions = self.get_object_positions_for_encoder()
+
+            symbolic = encode_symbolic_action(cmd)
+            symbolic_dict = symbolic_action_to_dict(symbolic)
+
+            vector = encode_action_vector(cmd, object_positions)
+            decoded = decode_action_vector(vector)
+
+            print("[ACTION] Symbolic:", symbolic_dict)
+            print("[ACTION] Vector:", vector)
+            print("[ACTION] Decoded:", decoded)
+
+            with self._console_lock:
+                self.console_status = f"Action encoded: {symbolic.action_type} / {symbolic.object_name}"
+
+        except Exception as e:
+            print("[ACTION] Warning: action encoding failed:", e)
+    def _execute_parsed_command(self, cmd: dict, raw: str | None = None) -> None:
+        if raw:
+            with self._console_lock:
+                self.console_history.append(raw)
+                self.console_history = self.console_history[-10:]
+
+        task = cmd.get("task", "unknown")
+
+        with self._console_lock:
+            if self._console_busy and task in ("pick_place", "pick_place_xy", "stack", "place_on", "sort_all", "tower"):
+                self.console_status = "Busy: wait for current motion to finish"
+                return
+
+        def run():
+            try:
+                with self._console_lock:
+                    self.console_status = f"Parsed: {task}"
+
+                if task == "help":
+                    with self._console_lock:
+                        self.console_status = (
+                            "Help: list objects | where is red_box | pick red_box place bin/left/right/x..y.. | "
+                            "stack red_box on green_box | sort all | make a tower | reset | quit"
+                        )
+                    return
+
+                if task == "unknown":
+                    with self._console_lock:
+                        self.console_status = "❌ Unknown command"
+                    return
+
+                if task == "quit":
+                    with self._console_lock:
+                        self.console_status = "Stopping..."
+                    self.run = False
+                    self._hold_running = False
+                    self.stop_flag.set()
+                    return
+
+                if task == "reset":
+                    with self._console_lock:
+                        self.console_status = "Resetting..."
+                    self.reset_home()
+                    with self._console_lock:
+                        self.console_status = "✅ reset done"
+                    return
+
+                if task == "gripper":
+                    mode = cmd.get("mode", "open")
+                    self.gripper(open=(mode == "open"))
+                    with self._console_lock:
+                        self.console_status = f"✅ gripper {mode}"
+                    return
+
+                if task == "list_objects":
+                    s = self.list_objects()
+                    with self._console_lock:
+                        self.console_status = "✅ Listed objects (see terminal)"
+                    print(s)
+                    return
+
+                if task == "where":
+                    s = self.where_is(cmd.get("obj", "box"))
+                    with self._console_lock:
+                        self.console_status = s
+                    print(s)
+                    return
+
+                # ----- motion tasks -----
+                with self._console_lock:
+                    self._console_busy = True
+                self.motion_busy.set()
+
+                if task in ("pick_place", "pick_place_xy", "stack", "place_on"):
+                    if not self.vision_check_object(cmd):
+                        with self._console_lock:
+                            self._console_busy = False
+                        self.motion_busy.clear()
+                        return
+
+                    self.encode_and_to_site(obj, target)
 
                 elif task == "pick_place_xy":
                     obj = cmd.get("obj", "box")

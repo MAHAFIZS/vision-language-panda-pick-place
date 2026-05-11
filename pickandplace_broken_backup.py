@@ -920,11 +920,9 @@ class Demo:
         """
         Stable live verification for terminal/GUI execution.
 
-        Camera-based perception is tested separately with:
+        Camera perception is tested separately with:
             python3 test_perception.py
             python3 test_vision_language.py
-
-        During live MuJoCo viewer execution, do not create mujoco.Renderer().
         """
         obj = cmd.get("obj", "box")
         valid_objects = self._valid_object_names()
@@ -941,6 +939,50 @@ class Demo:
         print("[VISION] Grounded:", {"obj": obj, "visible": True})
         return True
 
+    # ---------------- action encoding helpers ----------------
+    def get_object_positions_for_encoder(self) -> dict:
+        """
+        Return object positions from MuJoCo for the action encoder.
+        """
+        positions = {}
+
+        for obj_name in self._valid_object_names():
+            try:
+                b = self.data.body(obj_name)
+                positions[obj_name] = [
+                    float(b.xpos[0]),
+                    float(b.xpos[1]),
+                    float(b.xpos[2]),
+                ]
+            except Exception:
+                pass
+
+        return positions
+
+    def encode_and_print_action(self, cmd: dict) -> None:
+        """
+        Convert parsed language command into symbolic and numerical action encoding.
+        """
+        try:
+            object_positions = self.get_object_positions_for_encoder()
+
+            symbolic = encode_symbolic_action(cmd)
+            symbolic_dict = symbolic_action_to_dict(symbolic)
+
+            vector = encode_action_vector(cmd, object_positions)
+            decoded = decode_action_vector(vector)
+
+            print("[ACTION] Symbolic:", symbolic_dict)
+            print("[ACTION] Vector:", vector)
+            print("[ACTION] Decoded:", decoded)
+
+            with self._console_lock:
+                self.console_status = f"Action encoded: {symbolic.action_type} / {symbolic.object_name}"
+
+        except Exception as e:
+            print("[ACTION] Warning: action encoding failed:", e)
+
+    # ---------------- command execution ----------------
     def _execute_parsed_command(self, cmd: dict, raw: str | None = None) -> None:
         if raw:
             with self._console_lock:
@@ -1021,6 +1063,8 @@ class Demo:
                         self.motion_busy.clear()
                         return
 
+                    self.encode_and_print_action(cmd)
+
                 if task == "pick_place":
                     obj = cmd.get("obj", "box")
                     target = cmd.get("target", "bin_center")
@@ -1072,6 +1116,7 @@ class Demo:
                 with self._console_lock:
                     self._console_busy = False
                     self.console_status = "✅ Done"
+
                 self.motion_busy.clear()
 
             except Exception as e:
@@ -1079,10 +1124,11 @@ class Demo:
                 with self._console_lock:
                     self._console_busy = False
                     self.console_status = f"Error: {e}"
+                print("[ERROR]", e)
 
         Thread(target=run, daemon=True).start()
 
-    # ---------------- viewer ----------------
+
     def render(self) -> None:
         glfw.init()
         glfw.window_hint(glfw.SAMPLES, 8)
