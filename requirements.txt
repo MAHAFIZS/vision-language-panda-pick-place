@@ -6,3 +6,4 @@ SpeechRecognition
 pyaudio
 scikit-learn
 joblib
+torch
