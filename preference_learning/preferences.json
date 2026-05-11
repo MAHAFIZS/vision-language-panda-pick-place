@@ -1,0 +1,1041 @@
+{
+  "description": "Preference pairs for VLA pick-and-place actions",
+  "num_pairs": 21,
+  "pairs": [
+    {
+      "demo_id": 1,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        2.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_object",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_object"
+    },
+    {
+      "demo_id": 1,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.7500000119209289,
+        -0.649999988079071,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_target",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_target"
+    },
+    {
+      "demo_id": 1,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.7500000119209289,
+        -0.24999998807907103,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_position",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_position"
+    },
+    {
+      "demo_id": 2,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        2.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_object",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_object"
+    },
+    {
+      "demo_id": 2,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.7500000119209289,
+        -0.649999988079071,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_target",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_target"
+    },
+    {
+      "demo_id": 2,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.7500000119209289,
+        -0.24999998807907103,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_position",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_position"
+    },
+    {
+      "demo_id": 3,
+      "command": "move the yellow block to x 0.45 y 0.20",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "yellow_box",
+        "x": 0.45,
+        "y": 0.2
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "yellow_box",
+        "object_id": 4,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.45,
+          0.2
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        4.0,
+        0.699999988079071,
+        -0.30000001192092896,
+        0.44999998807907104,
+        0.20000000298023224,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        1.0,
+        0.699999988079071,
+        -0.30000001192092896,
+        0.44999998807907104,
+        0.20000000298023224,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_object",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_object"
+    },
+    {
+      "demo_id": 3,
+      "command": "move the yellow block to x 0.45 y 0.20",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "yellow_box",
+        "x": 0.45,
+        "y": 0.2
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "yellow_box",
+        "object_id": 4,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.45,
+          0.2
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        4.0,
+        0.699999988079071,
+        -0.30000001192092896,
+        0.44999998807907104,
+        0.20000000298023224,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        4.0,
+        0.699999988079071,
+        -0.30000001192092896,
+        0.649999988079071,
+        2.980232227667301e-09,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_target",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_target"
+    },
+    {
+      "demo_id": 3,
+      "command": "move the yellow block to x 0.45 y 0.20",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "yellow_box",
+        "x": 0.45,
+        "y": 0.2
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "yellow_box",
+        "object_id": 4,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.45,
+          0.2
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        4.0,
+        0.699999988079071,
+        -0.30000001192092896,
+        0.44999998807907104,
+        0.20000000298023224,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        4.0,
+        0.699999988079071,
+        -0.30000001192092896,
+        0.649999988079071,
+        0.40000000298023225,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_position",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_position"
+    },
+    {
+      "demo_id": 4,
+      "command": "put the green cube to the right",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "green_box",
+        "target": "zone_right"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "green_box",
+        "object_id": 2,
+        "target_name": "zone_right",
+        "target_id": 3,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        2.0,
+        0.5,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        3.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        1.0,
+        0.5,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        3.0,
+        0.0
+      ],
+      "rejection_type": "wrong_object",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_object"
+    },
+    {
+      "demo_id": 4,
+      "command": "put the green cube to the right",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "green_box",
+        "target": "zone_right"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "green_box",
+        "object_id": 2,
+        "target_name": "zone_right",
+        "target_id": 3,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        2.0,
+        0.5,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        3.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        2.0,
+        0.5,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "rejection_type": "wrong_target",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_target"
+    },
+    {
+      "demo_id": 4,
+      "command": "put the green cube to the right",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "green_box",
+        "target": "zone_right"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "green_box",
+        "object_id": 2,
+        "target_name": "zone_right",
+        "target_id": 3,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        2.0,
+        0.5,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        3.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        2.0,
+        0.5,
+        -0.30000001192092896,
+        0.2,
+        0.2,
+        3.0,
+        0.0
+      ],
+      "rejection_type": "wrong_position",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_position"
+    },
+    {
+      "demo_id": 5,
+      "command": "pick the blue cube and place it in the bin",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "blue_box",
+        "target": "bin_center"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "blue_box",
+        "object_id": 3,
+        "target_name": "bin_center",
+        "target_id": 1,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        3.0,
+        0.6000000238418579,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        1.0,
+        0.6000000238418579,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "rejection_type": "wrong_object",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_object"
+    },
+    {
+      "demo_id": 5,
+      "command": "pick the blue cube and place it in the bin",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "blue_box",
+        "target": "bin_center"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "blue_box",
+        "object_id": 3,
+        "target_name": "bin_center",
+        "target_id": 1,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        3.0,
+        0.6000000238418579,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        3.0,
+        0.6000000238418579,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        2.0,
+        0.0
+      ],
+      "rejection_type": "wrong_target",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_target"
+    },
+    {
+      "demo_id": 5,
+      "command": "pick the blue cube and place it in the bin",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "blue_box",
+        "target": "bin_center"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "blue_box",
+        "object_id": 3,
+        "target_name": "bin_center",
+        "target_id": 1,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        3.0,
+        0.6000000238418579,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        3.0,
+        0.6000000238418579,
+        -0.30000001192092896,
+        0.2,
+        0.2,
+        1.0,
+        0.0
+      ],
+      "rejection_type": "wrong_position",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_position"
+    },
+    {
+      "demo_id": 6,
+      "command": "put the red cube to the left",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "red_box",
+        "target": "zone_left"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": "zone_left",
+        "target_id": 2,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        2.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        2.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        2.0,
+        0.0
+      ],
+      "rejection_type": "wrong_object",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_object"
+    },
+    {
+      "demo_id": 6,
+      "command": "put the red cube to the left",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "red_box",
+        "target": "zone_left"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": "zone_left",
+        "target_id": 2,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        2.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "rejection_type": "wrong_target",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_target"
+    },
+    {
+      "demo_id": 6,
+      "command": "put the red cube to the left",
+      "parsed_task": {
+        "task": "pick_place",
+        "obj": "red_box",
+        "target": "zone_left"
+      },
+      "symbolic_action": {
+        "action_type": "pick_place",
+        "action_type_id": 1,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": "zone_left",
+        "target_id": 2,
+        "target_xy": null,
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        1.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.0,
+        0.0,
+        2.0,
+        0.0
+      ],
+      "rejected_action_vector": [
+        1.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.2,
+        0.2,
+        2.0,
+        0.0
+      ],
+      "rejection_type": "wrong_position",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_position"
+    },
+    {
+      "demo_id": 7,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        2.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_object",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_object"
+    },
+    {
+      "demo_id": 7,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.7500000119209289,
+        -0.649999988079071,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_target",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_target"
+    },
+    {
+      "demo_id": 7,
+      "command": "pick the red cube and place it at x 0.55 y -0.45",
+      "parsed_task": {
+        "task": "pick_place_xy",
+        "obj": "red_box",
+        "x": 0.55,
+        "y": -0.45
+      },
+      "symbolic_action": {
+        "action_type": "pick_place_xy",
+        "action_type_id": 2,
+        "object_name": "red_box",
+        "object_id": 1,
+        "target_name": null,
+        "target_id": 0,
+        "target_xy": [
+          0.55,
+          -0.45
+        ],
+        "control_mode": "cartesian",
+        "gripper_sequence": [
+          "open",
+          "close",
+          "open"
+        ]
+      },
+      "preferred_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.550000011920929,
+        -0.44999998807907104,
+        0.0,
+        1.0
+      ],
+      "rejected_action_vector": [
+        2.0,
+        1.0,
+        0.4000000059604645,
+        -0.30000001192092896,
+        0.7500000119209289,
+        -0.24999998807907103,
+        0.0,
+        1.0
+      ],
+      "rejection_type": "wrong_position",
+      "preference_label": "preferred_over_rejected",
+      "reason": "preferred action matches saved demonstration; rejected action has wrong_position"
+    }
+  ]
+}
