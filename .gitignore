@@ -21,3 +21,6 @@ core.*
 
 # Keep trained demo models only if intentionally committed
 # models/*.pkl
+MUJOCO_LOG.TXT
+media/*.mp4
+video_action/frames/
