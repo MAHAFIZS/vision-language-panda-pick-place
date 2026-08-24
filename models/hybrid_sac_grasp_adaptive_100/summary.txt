@@ -1,0 +1,18 @@
+Adaptive Failure-Aware Manipulation Benchmark
+============================================
+
+Episodes: 100
+Pre-grasp success: 100.0%
+Grasp success: 100.0%
+Full pipeline success: 100.0%
+
+Direct grasp success: 100.0%
+Staged grasp success: 100.0%
+Staged trials: 11
+
+Original route full success: 100.0%
+Targeted route full success: 100.0%
+
+Previous full pipeline: 94.0%
+Adaptive full pipeline: 100.0%
+Improvement: +6.0 pp

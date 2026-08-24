@@ -1,0 +1,16 @@
+Object-Reach SAC Comparison
+===========================
+
+UNIFORM BENCHMARK
+Original success: 88.0%
+Targeted success: 84.0%
+Improvement: -4.0 pp
+Original mean error: 0.0401 m
+Targeted mean error: 0.0395 m
+
+HARD NEGATIVE-Y BENCHMARK
+Original success: 22.0%
+Targeted success: 100.0%
+Improvement: +78.0 pp
+Original mean error: 0.0558 m
+Targeted mean error: 0.0378 m

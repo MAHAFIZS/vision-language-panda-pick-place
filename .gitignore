@@ -24,3 +24,11 @@ core.*
 MUJOCO_LOG.TXT
 media/*.mp4
 video_action/frames/
+
+# Training checkpoints
+*_latest.pt
+*_final.pt
+
+# Python cache
+__pycache__/
+*.pyc

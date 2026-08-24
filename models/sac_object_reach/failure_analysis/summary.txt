@@ -1,0 +1,21 @@
+SAC Object Pre-Grasp Failure Analysis
+=====================================
+
+Episodes: 100
+Successes: 88
+Failures: 12
+Success rate: 88.0%
+
+Final distance:
+mean=0.0401, median=0.0382, min=0.0319, max=0.0725, std=0.0089
+
+Failure object range:
+X: 0.4156 to 0.5818
+Y: -0.1935 to -0.1421
+
+Failure residual error:
+X: 0.0430 m
+Y: 0.0424 m
+Z: 0.0002 m
+
+Dominant residual axis: X

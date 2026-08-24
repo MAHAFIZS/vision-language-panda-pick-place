@@ -1,0 +1,26 @@
+SAC Hard-Target Benchmark
+=========================
+
+Original success rate: 63.0%
+Targeted success rate: 85.0%
+Improvement: +22.0 percentage points
+
+Original mean final distance: 0.0457 m
+Targeted mean final distance: 0.0348 m
+Mean error improvement: +0.0109 m
+
+hard_low_x
+  Original success: 64.1%
+  Targeted success: 87.2%
+  Improvement: +23.1 pp
+
+hard_negative_y
+  Original success: 70.0%
+  Targeted success: 80.0%
+  Improvement: +10.0 pp
+
+hard_high_z
+  Original success: 54.8%
+  Targeted success: 87.1%
+  Improvement: +32.3 pp
+

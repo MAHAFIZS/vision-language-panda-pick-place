@@ -1,785 +1,752 @@
-# Vision-Language Panda Pick-and-Place
+Failure-Aware Robot Learning for Franka Panda Manipulation
 
-A MuJoCo-based Vision-Language-Action robotics project for natural-language-controlled pick-and-place with a Franka Emika Panda robot.
+A MuJoCo + PyTorch robot-learning project for Franka Panda manipulation that combines:
 
-This project demonstrates how a natural-language command such as:
+Soft Actor-Critic (SAC)
+Object-relative Cartesian control
+Failure-region analysis
+Targeted policy retraining
+Specialist-policy routing
+Grasp verification
+Adaptive trajectory correction
+Natural-language / VLA manipulation components
 
-```text
-pick the red cube and place it at x 0.55 y -0.45
-```
+PROJECT OVERVIEW
 
-is converted into:
+The project explores a failure-aware robot-learning workflow:
 
-```text
-language command
-→ parsed task
-→ object grounding
-→ symbolic action
-→ numerical action vector
-→ robot action sequence
-→ MuJoCo robot execution
-→ demonstration dataset
-→ behavior cloning
-→ diffusion-style action prediction
-→ world-model next-state prediction
-→ preference-based action ranking
-→ RL-style reward evaluation
-→ video-action dataset
-```
+Train policy
+↓
+Evaluate on unseen targets
+↓
+Detect systematic failures
+↓
+Generate targeted training distribution
+↓
+Train specialist policy
+↓
+Route between general + specialist policies
+↓
+Execute manipulation
+↓
+Detect grasp failures
+↓
+Adapt trajectory
+↓
+Re-evaluate
 
-The goal is to build a compact end-to-end prototype connecting language grounding, action encoding, robot manipulation, demonstration learning, and research-style embodied AI components.
+The central idea is that robot learning should not stop after training a single policy.
 
----
+Instead, the system continuously:
 
-## Demo
+Evaluates the learned policy
+Discovers systematic failure regions
+Generates targeted training data
+Trains specialized policies
+Routes tasks to the appropriate policy
+Verifies manipulation success
+Adapts the robot trajectory when failures are detected
 
-The system supports natural-language commands for colored cube manipulation in MuJoCo.
+FINAL RESULTS
 
-Example commands:
+OBJECT-RELATIVE SAC PRE-GRASP
 
-```text
-pick the red cube and place it at x 0.55 y -0.45
-move the yellow block to x 0.45 y 0.20
-put the green cube to the right
-pick the blue cube and place it in the bin
-put the red cube to the left
-```
+The Franka Panda learns Cartesian object-relative pre-grasp reaching using Soft Actor-Critic.
 
-Example VLA output:
+Observation:
 
-```text
-[LANGUAGE COMMAND]
-pick the red cube and place it at x 0.55 y -0.45
+The SAC policy receives a 26-dimensional state containing:
 
-[PARSED COMMAND]
-{'task': 'pick_place_xy', 'obj': 'red_box', 'x': 0.55, 'y': -0.45}
+End-effector position
+Object position
+Object-relative pre-grasp goal
+Goal-to-end-effector vector
+7 robot joint positions
+7 robot joint velocities
 
-[OBJECT GROUNDING]
-{'object_name': 'red_box', 'object_position': [0.4, -0.3, 0.03], 'visible_or_known': True}
+Action:
 
-[SYMBOLIC ACTION]
-{'action_type': 'pick_place_xy', 'object_name': 'red_box', ...}
+3-D Cartesian delta action
 
-[ACTION VECTOR]
-[2.0, 1.0, 0.4, -0.3, 0.55, -0.45, 0.0, 1.0]
+The action represents small Cartesian changes in the robot end-effector position.
 
-[ACTION SEQUENCE]
-01. APPROACH_OBJECT
-02. OPEN_GRIPPER
-03. DESCEND_TO_OBJECT
-04. CLOSE_GRIPPER
-05. LIFT_OBJECT
-06. MOVE_TO_TARGET
-07. DESCEND_TO_PLACE
-08. OPEN_GRIPPER
-09. RETREAT
-```
+FAILURE-AWARE REACH RESULTS
 
----
+The first evaluation was performed using previously unseen object positions.
 
-## Key Features
+Initial unseen-object evaluation:
 
-- Natural-language command parsing
-- Object/color grounding for red, green, blue, yellow, and default boxes
-- MuJoCo simulation with Franka Emika Panda robot
-- Cartesian pick-and-place execution
-- VLA-style symbolic action encoder
-- Numerical action vector representation
-- Robot action sequence generation
-- Demonstration dataset logger
-- Dataset loader for behavior cloning preparation
-- RandomForest behavior cloning baseline
-- Nearest-neighbor behavior cloning baseline
-- Tiny diffusion-style action policy prototype
-- Tiny world model prototype for next-state prediction
-- Preference learning prototype for action ranking
-- Reinforcement-learning-style reward function
-- Random policy evaluation
-- Video Action Dataset / VAM-style prototype
+Original SAC:
+88 / 100 success
 
----
+The failure analysis showed a strong weakness in the negative-Y workspace region.
 
-## Project Structure
+A targeted SAC specialist was therefore trained using failure-focused sampling.
 
-```text
+Hard-region benchmark:
+
+Original SAC: 22 / 100
+Targeted SAC: 100 / 100
+
+Improvement:
+
++78 percentage points
+
+This showed that targeted retraining on the detected failure region could dramatically improve policy performance.
+
+FAILURE-AWARE POLICY ROUTER
+
+After training the specialist policy, a failure-aware policy router was introduced.
+
+Object position
+↓
+Is y < -0.10?
+↓
+Yes -> Targeted SAC
+No -> Original SAC
+↓
+Pre-Grasp
+
+Policy selection logic:
+
+if object_y < -0.10:
+use targeted SAC
+else:
+use original SAC
+
+Hybrid unseen-object evaluation:
+
+100 / 100 pre-grasp success
+
+Therefore, combining the general SAC policy with the targeted specialist eliminated the detected pre-grasp failures in the evaluation benchmark.
+
+FAILURE-AWARE GRASP PIPELINE
+
+The learned pre-grasp policy was integrated into a complete manipulation pipeline.
+
+Object position
+↓
+Failure-aware SAC router
+↓
+Learned pre-grasp
+↓
+Precision XY alignment
+↓
+Vertical descent
+↓
+Close gripper
+↓
+Lift
+↓
+Verify object motion
+
+The system separates the learned reaching component from the precision grasp execution stages.
+
+INITIAL FULL MANIPULATION BENCHMARK
+
+Pre-grasp: 100 / 100
+Grasp: 94 / 100
+Full pipeline: 94 / 100
+
+The reinforcement-learning policy achieved reliable pre-grasp positioning, but six manipulation attempts still failed during the grasp stage.
+
+GRASP FAILURE ANALYSIS
+
+The six failed grasp attempts were automatically analyzed.
+
+The failures were tightly concentrated around:
+
+X ≈ 0.408 - 0.423 m
+Y ≈ -0.111 - -0.097 m
+
+The most important difference between successful and failed grasps was Cartesian descent tracking error.
+
+Successful grasps:
+
+Mean descent error ≈ 0.0057 m
+
+Failed grasps:
+
+Mean descent error ≈ 0.0218 m
+
+The descent error in the failed cases was therefore approximately four times larger.
+
+The analysis indicated that the main problem was not the SAC policy and was also not primarily object alignment.
+
+Instead, the failure was caused by the robot's direct low-X approach trajectory.
+
+ADAPTIVE GRASP RECOVERY
+
+A staged grasp approach was introduced for the difficult low-X region.
+
+Instead of:
+
+Pre-grasp
+↓
+Direct vertical descent above object
+↓
+Close gripper
+
+The adaptive planner performs:
+
+Pre-grasp
+↓
+Move to safe X
+↓
+Vertical descent
+↓
+Horizontal inward motion
+↓
+Close gripper
+↓
+Lift
+
+This changes the geometry of the robot's approach to the object in the difficult workspace region.
+
+SAFE APPROACH SWEEP
+
+safe_x = 0.440 m -> 0 / 6
+safe_x = 0.450 m -> 6 / 6
+safe_x = 0.460 m -> 6 / 6
+safe_x = 0.470 m -> 6 / 6
+safe_x = 0.480 m -> 6 / 6
+
+The selected adaptive approach uses:
+
+safe_x = 0.450 m
+
+This value was the smallest tested safe-X location that successfully recovered all six previously failed grasps.
+
+FINAL ADAPTIVE MANIPULATION BENCHMARK
+
+Evaluation:
+
+100 randomized object placements
+
+Results:
+
+Pre-grasp success: 100 / 100
+Grasp success: 100 / 100
+Full pipeline: 100 / 100
+
+Grasp strategies:
+
+Direct grasp trials: 89
+Direct success: 100%
+
+Staged grasp trials: 11
+Staged success: 100%
+
+Improvement over initial manipulation pipeline:
+
+94% -> 100%
+
++6 percentage points
+
+The adaptive trajectory system therefore recovered the remaining grasp failures after the SAC reaching failures had already been corrected through targeted policy specialization.
+
+FINAL ARCHITECTURE
+
+Randomized Object Position
+|
+v
+Failure-Aware Reach Router
+/
+Original SAC Targeted SAC
+\ /
+Pre-Grasp
+|
+v
+Grasp Risk Classifier
+/
+Normal Region Risky Region
+| |
+Direct Grasp Staged Approach
+|
+safe_x = 0.450
+|
+Vertical Descent
+|
+Horizontal Inward
+\ /
+Close Gripper
+|
+Lift
+|
+Verify Success
+
+The architecture contains two different failure-aware mechanisms.
+
+Learned-policy failure recovery
+
+General SAC
+↓
+Failure detection
+↓
+Targeted SAC specialist
+↓
+Policy routing
+
+Manipulation trajectory recovery
+
+Grasp failure detection
+↓
+Risk-region identification
+↓
+Staged Cartesian trajectory
+↓
+Successful grasp
+
+KEY TECHNICAL COMPONENTS
+
+PyTorch Soft Actor-Critic implementation
+Gaussian stochastic policy
+Twin Q-networks
+Target Q-networks
+Automatic entropy tuning
+Experience replay
+Polyak target updates
+Deterministic policy evaluation
+MuJoCo physics simulation
+Franka Panda Cartesian control
+Jacobian-based Cartesian impedance control
+Randomized object placement
+Object-relative policy observations
+Failure-region mining
+Targeted curriculum retraining
+General + specialist policy routing
+Quantitative rollout analysis
+Grasp/lift verification
+Adaptive Cartesian trajectory planning
+Failure-focused benchmarking
+
+SOFT ACTOR-CRITIC COMPONENTS
+
+GAUSSIAN STOCHASTIC POLICY
+
+The actor learns a Gaussian action distribution.
+
+State
+↓
+Neural Network
+↓
+Mean mu(s)
+Standard deviation sigma(s)
+↓
+Sample action
+↓
+Cartesian dx, dy, dz
+
+The policy learns a probability distribution over Cartesian actions rather than directly producing only a deterministic motion.
+
+TWIN Q-NETWORKS
+
+Two critic networks are used:
+
+Q1(s,a)
+Q2(s,a)
+
+Using twin critics reduces the risk of overestimating action values.
+
+The smaller critic estimate can be used when computing the target value:
+
+min(Q1, Q2)
+
+TARGET Q-NETWORKS
+
+Slowly updated copies of the critic networks are maintained.
+
+Online critics
+↓
+Polyak update
+↓
+Target critics
+
+The target networks make learning more stable.
+
+AUTOMATIC ENTROPY TUNING
+
+SAC balances:
+
+Task reward
++
+Policy exploration
+
+through the entropy term.
+
+The entropy coefficient can be automatically adapted during training rather than manually selecting a fixed value.
+
+EXPERIENCE REPLAY
+
+Transitions collected during robot interaction are stored in a replay buffer.
+
+Each transition can contain:
+
+state
+action
+reward
+next_state
+done
+
+During training, random minibatches are sampled from the replay buffer.
+
+POLYAK TARGET UPDATES
+
+Target critic parameters are updated slowly.
+
+Conceptually:
+
+target_parameters =
+tau * online_parameters
++
+(1 - tau) * target_parameters
+
+This prevents the target network from changing too rapidly.
+
+DETERMINISTIC POLICY EVALUATION
+
+Although SAC uses a stochastic policy during training, evaluation can use the deterministic mean action.
+
+This provides more repeatable policy performance during benchmarking.
+
+OBJECT-RELATIVE REINFORCEMENT LEARNING
+
+Instead of learning only from absolute robot positions, the policy receives information describing the relationship between:
+
+Robot end effector
+Object
+Pre-grasp target
+
+This allows the policy to learn more general reaching behavior across different randomized object positions.
+
+The policy learns approximately:
+
+"How should I move relative to the object?"
+
+instead of:
+
+"Move to one memorized absolute coordinate."
+
+FAILURE-REGION MINING
+
+After evaluating the policy on randomized unseen targets, failed examples are collected.
+
+Example:
+
+Target 1 -> success
+Target 2 -> success
+Target 3 -> failure
+Target 4 -> failure
+Target 5 -> success
+
+The failed target coordinates can then be analyzed spatially.
+
+In this project, failure analysis identified a systematic weakness around the negative-Y region.
+
+This transformed policy improvement from:
+
+Train more everywhere
+
+into:
+
+Train specifically where the policy fails
+
+TARGETED CURRICULUM RETRAINING
+
+Instead of retraining another policy using the original uniform workspace distribution, the specialist policy is trained using samples concentrated around the discovered difficult region.
+
+General workspace training
+↓
+Policy evaluation
+↓
+Failure distribution
+↓
+Targeted sampling
+↓
+Specialist SAC
+
+This creates a failure-focused curriculum.
+
+GENERAL + SPECIALIST POLICY ROUTING
+
+The system does not discard the original SAC policy.
+
+Instead, both policies are retained:
+
+General SAC
+Specialist SAC
+
+A routing rule determines which policy should be used for each object position.
+
+This makes the architecture similar to a small mixture-of-experts system, where different controllers specialize in different parts of the task distribution.
+
+GRASP VERIFICATION
+
+The system does not assume that closing the gripper means that the object was successfully grasped.
+
+Instead, the object's behavior after the grasp is checked.
+
+Close gripper
+↓
+Lift robot
+↓
+Observe object position
+↓
+Did object move upward?
+↓
+Yes -> grasp success
+No -> grasp failure
+
+This provides explicit manipulation verification.
+
+ADAPTIVE CARTESIAN TRAJECTORY PLANNING
+
+For normal workspace regions:
+
+Pre-grasp
+↓
+Vertical descent
+↓
+Grasp
+
+For the risky low-X region:
+
+Pre-grasp
+↓
+Move outward to safe X
+↓
+Descend vertically
+↓
+Move horizontally toward object
+↓
+Grasp
+
+This demonstrates that some robot-learning failures do not require another neural network.
+
+Failure analysis can show that the problem is caused by:
+
+robot kinematics
+tracking error
+geometry
+contact conditions
+trajectory design
+
+The system can then apply the appropriate recovery mechanism.
+
+REPOSITORY STRUCTURE
+
 vision-language-panda-pick-place/
-│
-├── pickandplace.py                     # Main MuJoCo Panda pick-and-place controller
-├── nl_interface.py                     # Natural-language command parser
-├── run_vla_action_demo.py              # Standalone VLA pipeline demo
-│
-├── action_encoding/
-│   ├── __init__.py
-│   └── action_encoder.py               # Symbolic and vector action encoder
-│
-├── action_sequence/
-│   ├── __init__.py
-│   └── sequence_encoder.py             # Converts actions into robot step sequences
-│
-├── perception/
-│   ├── __init__.py
-│   ├── color_detector.py               # Simple color-based object detection
-│   └── vision_grounder.py              # Vision-language object grounding
-│
-├── dataset/
-│   ├── __init__.py
-│   ├── demo_logger.py                  # Saves VLA demonstrations as JSON
-│   └── dataset_loader.py               # Loads demos into X/Y learning arrays
-│
-├── datasets/
-│   └── demo_0001.json                  # Saved demonstrations
-│
-├── diffusion_policy/
-│   ├── __init__.py
-│   ├── train_tiny_diffusion_policy.py  # Tiny denoising action model
-│   └── predict_tiny_diffusion_action.py
-│
-├── world_model/
-│   ├── __init__.py
-│   ├── train_tiny_world_model.py       # Next-state prediction model
-│   └── predict_next_state.py
-│
-├── preference_learning/
-│   ├── __init__.py
-│   ├── create_preference_dataset.py
-│   ├── train_preference_ranker.py
-│   ├── rank_candidate_actions.py
-│   └── preferences.json
-│
-├── rl/
-│   ├── __init__.py
-│   ├── reward_function.py
-│   ├── evaluate_action_reward.py
-│   └── random_policy_eval.py
-│
-├── video_action/
-│   ├── __init__.py
-│   ├── extract_video_frames.py
-│   ├── create_video_action_dataset.py
-│   ├── inspect_video_action_dataset.py
-│   └── datasets/
-│       └── video_action_dataset.json
-│
-├── models/
-│   ├── bc_policy.pkl
-│   ├── nn_bc_policy.pkl
-│   ├── tiny_diffusion_policy.pt
-│   ├── tiny_world_model.pkl
-│   └── preference_ranker.pkl
-│
-├── train_bc_baseline.py
-├── predict_bc_action.py
-├── train_nn_bc_baseline.py
-├── predict_nn_bc_action.py
-│
-├── test_action_encoder.py
-├── test_dataset_loader.py
-├── test_perception.py
-├── test_vision_language.py
-│
-├── world.xml
-├── panda.xml
-├── requirements.txt
-└── README.md
-```
+|
+|-- pickandplace.py
+|-- nl_interface.py
+|-- world.xml
+|-- panda.xml
+|
+|-- rl/
+| |-- panda_rl_env.py
+| |-- panda_rl_env_targeted.py
+| |
+| |-- panda_object_reach_env.py
+| |-- panda_object_reach_env_targeted.py
+| |
+| |-- replay_buffer.py
+| |-- sac_networks.py
+| |-- sac_agent.py
+| |
+| |-- train_sac.py
+| |-- train_sac_targeted.py
+| |-- train_sac_object_reach.py
+| |-- train_sac_object_reach_targeted.py
+| |
+| |-- evaluate_sac.py
+| |-- evaluate_sac_targeted.py
+| |-- evaluate_sac_hard_targets.py
+| |
+| |-- evaluate_sac_object_reach.py
+| |-- evaluate_sac_object_targeted.py
+| |-- evaluate_sac_object_hybrid.py
+| |
+| |-- analyze_reach_failures.py
+| |-- analyze_object_reach_failures.py
+| |-- analyze_grasp_failures.py
+| |
+| |-- hybrid_sac_grasp.py
+| |-- evaluate_hybrid_sac_grasp_100.py
+| |-- evaluate_hybrid_sac_grasp_adaptive_100.py
+| |
+| |-- sweep_grasp_corrections.py
+| |-- sweep_staged_grasp_approach.py
+|
+|-- models/
+| |-- sac_reach/
+| |-- sac_reach_targeted/
+| |-- sac_object_reach/
+| |-- sac_object_reach_targeted/
+| |-- sac_hard_benchmark/
+| |-- hybrid_sac_grasp_100/
+| |-- hybrid_sac_grasp_adaptive_100/
+|
+|-- action_encoding/
+|-- action_sequence/
+|-- perception/
+|-- dataset/
+|-- diffusion_policy/
+|-- world_model/
+|-- preference_learning/
+|-- video_action/
+|
+|-- requirements.txt
+|-- README.md
 
----
+RUNNING THE FINAL BENCHMARK
 
-## Pipeline Overview
+Activate environment:
 
-```text
-Natural Language
-      ↓
-Command Parser
-      ↓
-Object Grounding
-      ↓
-Symbolic Action Encoder
-      ↓
-Numerical Action Vector
-      ↓
-Robot Action Sequence
-      ↓
-MuJoCo Robot Execution
-      ↓
-Demonstration Logger
-      ↓
-Dataset Loader
-      ↓
-Learning Prototypes
-```
+conda activate panda_rl
 
-Learning prototypes include:
+Go to project directory:
 
-```text
-Behavior Cloning
-Nearest-Neighbor Imitation
-Diffusion-Style Action Prediction
-World Model Prediction
-Preference-Based Action Ranking
-RL-Style Reward Evaluation
-Video-Action Dataset Generation
-```
-
----
-
-## Action Representation
-
-### Symbolic Action
-
-```python
-{
-    "action_type": "pick_place_xy",
-    "action_type_id": 2,
-    "object_name": "red_box",
-    "object_id": 1,
-    "target_xy": [0.55, -0.45],
-    "control_mode": "cartesian",
-    "gripper_sequence": ["open", "close", "open"]
-}
-```
-
-### Numerical Action Vector
-
-Format:
-
-```text
-[
-    action_type_id,
-    object_id,
-    pick_x,
-    pick_y,
-    place_x,
-    place_y,
-    target_id,
-    has_explicit_xy
-]
-```
-
-Example:
-
-```text
-[2.0, 1.0, 0.4, -0.3, 0.55, -0.45, 0.0, 1.0]
-```
-
----
-
-## Action Sequence Encoding
-
-Each language instruction is converted into robot-executable action steps:
-
-```text
-01. APPROACH_OBJECT
-02. OPEN_GRIPPER
-03. DESCEND_TO_OBJECT
-04. CLOSE_GRIPPER
-05. LIFT_OBJECT
-06. MOVE_TO_TARGET
-07. DESCEND_TO_PLACE
-08. OPEN_GRIPPER
-09. RETREAT
-```
-
-This provides a bridge between high-level language commands and low-level robot execution.
-
----
-
-## Demonstration Dataset
-
-The project saves each VLA demonstration as JSON.
-
-Each demo stores:
-
-- language command
-- parsed task
-- object grounding
-- symbolic action
-- numerical action vector
-- decoded action
-- robot action sequence
-- timestamp
-
-Example:
-
-```json
-{
-  "demo_id": 1,
-  "timestamp": "2026-05-11T20:31:39",
-  "data": {
-    "language": "pick the red cube and place it at x 0.55 y -0.45",
-    "parsed_task": {
-      "task": "pick_place_xy",
-      "obj": "red_box",
-      "x": 0.55,
-      "y": -0.45
-    },
-    "object_grounding": {
-      "object_name": "red_box",
-      "object_position": [0.4, -0.3, 0.03],
-      "visible_or_known": true
-    },
-    "action_vector": [2.0, 1.0, 0.4, -0.3, 0.55, -0.45, 0.0, 1.0]
-  }
-}
-```
-
-These demonstrations can be used for:
-
-- behavior cloning
-- imitation learning
-- diffusion-policy-style learning
-- sequence modeling
-- world-model-conditioned action prediction
-- preference learning
-- reward-based policy evaluation
-
----
-
-## Behavior Cloning Baselines
-
-### RandomForest Behavior Cloning
-
-A small supervised model predicts action vectors from compact task/object features.
-
-Input:
-
-```text
-[action_type_id, object_id, target_id, has_explicit_xy]
-```
-
-Output:
-
-```text
-[action_type_id, object_id, pick_x, pick_y, place_x, place_y, target_id, has_explicit_xy]
-```
+cd ~/Desktop/vision-language-panda-pick-place
 
 Run:
 
-```bash
-python3 train_bc_baseline.py
-python3 predict_bc_action.py
-```
+python rl/evaluate_hybrid_sac_grasp_adaptive_100.py
 
-### Nearest-Neighbor Behavior Cloning
+Expected result:
 
-A retrieval-based baseline finds the closest saved demonstration and reuses its action vector.
+Pre-grasp success: 100/100
+Grasp success: 100/100
+Full pipeline success: 100/100
 
-This works better for small datasets because it preserves categorical values such as object ID and target ID.
+FAILURE-AWARE ROBOT LEARNING CONCEPT
 
-Run:
+The main idea of this project is that robot learning should not stop after training a single policy.
 
-```bash
-python3 train_nn_bc_baseline.py
-python3 predict_nn_bc_action.py
-```
+Policy
+↓
+Evaluation
+↓
+Failure discovery
+↓
+Specialization
+↓
+Routing
+↓
+Execution
+↓
+Verification
+↓
+Adaptive recovery
 
-Example:
+This provides a practical framework for improving robot-policy reliability in previously unseen or difficult workspace regions.
 
-```text
-put the green cube to the right
-→ retrieves saved green/right demonstration
-→ predicts green_box + zone_right correctly
-```
+Instead of asking only:
 
----
+"How accurate is my robot policy?"
 
-## Tiny Diffusion Policy Prototype
+the system asks:
 
-The project includes a lightweight diffusion-style action predictor.
+Where does the policy fail?
+Why does it fail?
+Can the failure region be modeled?
+Can a specialist policy solve it?
+Should a different policy be selected there?
+Did the manipulation actually succeed?
+If not, can the trajectory itself be changed?
 
-It trains an MLP denoising model over action vectors:
+This produces a more systematic:
 
-```text
-condition = [action_type_id, object_id, target_id, has_explicit_xy]
-clean_action = [action_type_id, object_id, pick_x, pick_y, place_x, place_y, target_id, has_explicit_xy]
-noisy_action = clean_action + Gaussian noise
-model input = condition + noisy_action + noise_level
-model output = denoised action vector
-```
+train -> evaluate -> diagnose -> improve -> verify
 
-This is an action-space diffusion prototype, not yet a full image-conditioned diffusion policy.
+robot-learning workflow.
 
-Run:
+TECHNOLOGIES
 
-```bash
-python3 diffusion_policy/train_tiny_diffusion_policy.py
-python3 diffusion_policy/predict_tiny_diffusion_action.py
-```
+Python
+PyTorch
+MuJoCo
+Soft Actor-Critic
+NumPy
+Pandas
+Matplotlib
+Franka Panda
+Cartesian impedance control
+Reinforcement learning
+Robot manipulation
+Failure-aware policy evaluation
 
-Example output:
+EARLIER VLA COMPONENTS
 
-```text
-[COMMAND]
-put the green cube to the right
+The repository also contains earlier experimental components for:
 
-[POST-PROCESSED ACTION VECTOR]
-[1.0, 2.0, 0.4934, -0.2936, 0.0062, -0.0022, 3.0, 0.0]
+Natural-language command parsing
+Object grounding
+Symbolic action encoding
+Behavior cloning
+Nearest-neighbor imitation
+Diffusion-style action prediction
+World-model prediction
+Preference learning
+Video-action datasets
 
-[DECODED PREDICTION]
-{'action_type': 'pick_place', 'object_name': 'green_box', 'target_name': 'zone_right'}
-```
+These components form the broader VLA / embodied-AI experimentation layer around the manipulation system.
 
----
+SHORT TECHNICAL SUMMARY
 
-## Tiny World Model Prototype
+This project develops a failure-aware reinforcement-learning and manipulation system for the Franka Panda robot in MuJoCo using PyTorch.
 
-The project includes a lightweight world model that predicts the next object state after an action.
+A Soft Actor-Critic policy first learns object-relative Cartesian pre-grasp reaching.
 
-The model learns:
+Initial evaluation:
 
-```text
-current object state + action vector → predicted next object position
-```
+88/100 success on unseen targets.
 
-Input format:
+Failure analysis identified a systematic weakness in a negative-Y workspace region.
 
-```text
-[
-  object_id,
-  current_x,
-  current_y,
-  current_z,
-  action_type_id,
-  pick_x,
-  pick_y,
-  place_x,
-  place_y,
-  target_id,
-  has_explicit_xy
-]
-```
+A targeted SAC specialist trained using failure-focused sampling improved performance in this difficult region from:
 
-Output format:
+22/100 -> 100/100
 
-```text
-[next_x, next_y, next_z]
-```
+A failure-aware routing mechanism combining the general and specialist policies then achieved:
 
-Run:
+100/100 pre-grasp success
 
-```bash
-python3 world_model/train_tiny_world_model.py
-python3 world_model/predict_next_state.py
-```
+on randomized unseen object positions.
 
-Example:
+When integrated into the complete grasp pipeline, performance initially reached:
 
-```text
-Command: pick the red cube and place it at x 0.55 y -0.45
-Predicted next object position: [0.55, -0.448, 0.03]
-```
+94/100
 
----
+because six grasps failed despite successful pre-grasp positioning.
 
-## Preference Learning Prototype
+Automated trajectory analysis showed that failed grasps had significantly larger Cartesian descent errors:
 
-The project includes a lightweight preference-learning prototype.
+Successful:
+approximately 0.0057 m
 
-It generates synthetic preference pairs:
+Failed:
+approximately 0.0218 m
 
-```text
-preferred action > rejected action
-```
+The failures were concentrated in a low-X workspace region.
 
-Rejected actions are created by corrupting:
+A staged adaptive grasp trajectory was therefore introduced:
 
-- object ID
-- target ID
-- placement position
+pre-grasp
+-> safe-X motion
+-> vertical descent
+-> horizontal inward motion
+-> close gripper
+-> lift
+-> verify
 
-The trained preference ranker scores candidate actions for a language command and ranks them.
+Using:
 
-Run:
+safe_x = 0.450 m
 
-```bash
-python3 preference_learning/create_preference_dataset.py
-python3 preference_learning/train_preference_ranker.py
-python3 preference_learning/rank_candidate_actions.py
-```
+the final evaluation achieved:
 
-Example:
+Pre-grasp: 100/100
+Grasp: 100/100
+Full pipeline: 100/100
 
-```text
-Command: put the green cube to the right
-
-Rank 1: correct_action
-Decoded: {'action_type': 'pick_place', 'object_name': 'green_box', 'target_name': 'zone_right'}
-```
-
----
-
-## Tiny RL Reward Function Prototype
-
-The project includes a lightweight reinforcement-learning-style reward function.
-
-It evaluates candidate robot actions for a language command:
-
-```text
-state / command + action vector → reward
-```
-
-The reward checks:
-
-- correct action type
-- correct object
-- correct target or placement location
-- pick position consistency
-- distance to desired placement
-
-It also includes random policy evaluation, comparing random candidate actions against the rule-based correct action.
-
-Run:
-
-```bash
-python3 rl/evaluate_action_reward.py
-python3 rl/random_policy_eval.py
-```
-
-Example result:
-
-```text
-Correct action reward: 4.0
-Average random reward: much lower
-Best random reward: below correct action reward
-```
-
-This is not a full RL training loop yet, but it provides the reward and evaluation structure needed for future RL policy optimization.
-
----
-
-## Video Action Dataset Prototype
-
-The project includes a lightweight Video Action Model-style dataset prototype.
-
-It converts a MuJoCo demo video into frame-level samples:
-
-```text
-video frame + language command + action vector + action phase label
-```
-
-Pipeline:
-
-```text
-MuJoCo demo video
-→ frame extraction
-→ frame-level action labels
-→ video-action dataset JSON
-```
-
-Each frame sample stores:
-
-- frame path
-- language command
-- parsed task
-- symbolic action
-- numerical action vector
-- coarse action phase label
-- full action sequence
-
-Run:
-
-```bash
-python3 video_action/extract_video_frames.py --video media/vla_panda_demo.mp4 --fps 2
-python3 video_action/create_video_action_dataset.py
-python3 video_action/inspect_video_action_dataset.py
-```
-
-Example summary:
-
-```text
-Number of samples: 159
-
-Action phase counts:
-APPROACH_OBJECT: 19
-OPEN_GRIPPER: 29
-DESCEND_TO_OBJECT: 21
-CLOSE_GRIPPER: 16
-LIFT_OBJECT: 20
-MOVE_TO_TARGET: 22
-DESCEND_TO_PLACE: 19
-RETREAT: 13
-```
-
-This is not a full Video Action Model yet, but it creates the dataset structure needed for future video-conditioned action prediction.
-
----
-
-## Installation
-
-Create and activate a Python virtual environment:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Or install manually:
-
-```bash
-pip install mujoco glfw numpy opencv-python SpeechRecognition pyaudio scikit-learn joblib torch
-```
-
-On Ubuntu, PyAudio may require PortAudio:
-
-```bash
-sudo apt install portaudio19-dev python3-pyaudio
-pip install pyaudio
-```
-
----
-
-## Running the Main Robot Demo
-
-Terminal-based natural-language control:
-
-```bash
-python3 pickandplace.py --terminal
-```
-
-Example command:
-
-```text
-pick the red cube and place it at x 0.55 y -0.45
-```
-
-Viewer-console mode:
-
-```bash
-python3 pickandplace.py --viewer-console
-```
-
-Voice mode:
-
-```bash
-python3 pickandplace.py --voice-terminal
-```
-
----
-
-## Running the VLA Action Demo
-
-```bash
-python3 run_vla_action_demo.py
-```
-
-This prints:
-
-```text
-language command
-parsed command
-object grounding
-symbolic action
-action vector
-decoded action
-action sequence
-optional saved demonstration
-```
-
----
-
-## Dataset Logging
-
-Run:
-
-```bash
-python3 run_vla_action_demo.py
-```
-
-After each command, save the demonstration:
-
-```text
-Save this demonstration? [y/N]: y
-```
-
-Saved files appear in:
-
-```text
-datasets/demo_0001.json
-datasets/demo_0002.json
-...
-```
-
----
-
-## Dataset Loader
-
-```bash
-python3 test_dataset_loader.py
-```
-
-Example output:
-
-```text
-Loaded 6 demos.
-X shape: (6, 4)
-Y shape: (6, 8)
-```
-
----
-
-## Current Limitations
-
-- The current language parser is rule-based.
-- The object grounding uses simple color and object-name mappings.
-- The dataset is intentionally small for demonstration purposes.
-- The RandomForest BC model is a proof-of-concept and can average categorical IDs.
-- The nearest-neighbor BC baseline works better for small datasets but does not generalize like a learned policy.
-- The diffusion policy is action-space only, not image-conditioned.
-- The world model predicts simplified object-level next states.
-- The preference dataset uses synthetic corrupted actions.
-- The RL component is a reward/evaluation prototype, not a full training loop.
-- The video-action module creates frame/action metadata but does not yet train a video model.
-
----
-
-## Future Work
-
-Planned extensions:
-
-- Replace rule-based parsing with LLM-based command parsing
-- Use camera-based object detection during live execution
-- Add image features or scene embeddings to the action encoder
-- Collect larger demonstration datasets
-- Train classification-regression hybrid policies
-- Add sequence-level behavior cloning
-- Extend diffusion policy to image-conditioned action sequences
-- Train a world model from real transition data
-- Add learned preference models from human feedback
-- Add full RL policy optimization
-- Add video-conditioned action prediction
-- Integrate with ROS 2 or Isaac Lab for larger-scale robot learning workflows
-
----
-
-## Why This Project Matters
-
-This project is a compact prototype of a Vision-Language-Action robotics stack. It connects natural-language instructions to grounded robot actions, action representations, demonstrations, and learning baselines.
-
-It is designed as a stepping stone toward:
-
-- embodied AI
-- robotic foundation models
-- vision-language-action systems
-- imitation learning
-- diffusion-policy-style robotics
-- world-model-based robot reasoning
-- preference learning
-- reinforcement learning
-- video-action modeling
-- robot manipulation
-- sim-to-real robotics workflows
-
----
-
-## Author
-
-**M A Hafiz**  
-Robotics Simulation & Control Engineer  
-GitHub: [MAHAFIZS](https://github.com/MAHAFIZS)  
-Portfolio: [mahafizsourav.com](https://mahafizsourav.com)
+The resulting architecture demonstrates a failure-aware robot-learning framework combining reinforcement learning, targeted retraining, specialist-policy routing, quantitative failure analysis, grasp verification, and adaptive trajectory recovery.

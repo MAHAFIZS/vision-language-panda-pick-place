@@ -1,0 +1,22 @@
+SAC Panda Reach Failure Analysis
+===============================
+
+Episodes: 100
+Successes: 83
+Failures: 17
+Success rate: 83.0%
+
+Final distance:
+mean=0.0399, median=0.0338, min=0.0260, max=0.1421, std=0.0190
+
+Failure target ranges:
+X: 0.3531 to 0.6309
+Y: -0.2131 to 0.2189
+Z: 0.2988 to 0.4999
+
+Mean absolute residual errors:
+X: 0.0415 m
+Y: 0.0236 m
+Z: 0.0449 m
+
+Dominant residual axis: Z

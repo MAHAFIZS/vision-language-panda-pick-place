@@ -1,0 +1,20 @@
+Hybrid SAC Grasp Failure Analysis
+=================================
+
+Attempts: 100
+Successes: 94
+Failures: 6
+Success rate: 94.0%
+
+Failure object range:
+X: 0.4063 to 0.4253
+Y: -0.1127 to -0.0965
+
+Failure pre-grasp error:
+mean=0.0380, median=0.0387, min=0.0336, max=0.0398, std=0.0023
+
+Failure alignment error:
+mean=0.0071, median=0.0070, min=0.0060, max=0.0081, std=0.0010
+
+Failure descent error:
+mean=0.0218, median=0.0217, min=0.0215, max=0.0222, std=0.0003

@@ -1,0 +1,18 @@
+Hybrid SAC + Scripted Grasp Benchmark
+====================================
+
+Episodes: 100
+
+Pre-grasp success: 100.0%
+Mean pre-grasp error: 0.0371 m
+Worst pre-grasp error: 0.0399 m
+
+Grasp success given pre-grasp: 94.0%
+Full pipeline success: 94.0%
+
+Original-route success: 97.3%
+Targeted-route success: 84.0%
+
+Mean object lift: 0.1727 m
+Minimum object lift: -0.0000 m
+Maximum object lift: 0.1840 m
